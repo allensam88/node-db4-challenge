@@ -4,7 +4,10 @@ module.exports = {
     getRecipes,
     getRecipeById,
     getShoppingList,
-    getInstructions
+    getInstructions,
+    addRecipe,
+    updateRecipe,
+    removeRecipe
 };
 
 function getRecipes() {
@@ -28,30 +31,31 @@ function getInstructions(id) {
         .select('step', 'description')
         .where('recipe_id', id)
 }
-// function add(scheme) {
-//     return db('schemes')
-//         .insert(scheme, 'id')
-//         .then(ids => {
-//             const [id] = ids;
-//             return findById(id);
-//         });
-// }
 
-// function update(changes, id) {
-//     return db('schemes')
-//         .where({ id })
-//         .update(changes)
-//         .then(count => {
-//             return findById(id);
-//         });
-// }
+function addRecipe(recipe) {
+    return db('recipes')
+        .insert(recipe, 'id')
+        .then(ids => {
+            const [id] = ids;
+            return getRecipeById(id);
+        });
+}
 
-// function remove(id) {
-//     const deletedSchema = findById(id).then(item => item);
-//     return db('schemes')
-//         .where({ id })
-//         .del()
-//         .then(count => {
-//             return deletedSchema
-//         });
-// }
+function updateRecipe(changes, id) {
+    return db('recipes')
+        .where({ id })
+        .update(changes)
+        .then(count => {
+            return getRecipeById(id);
+        });
+}
+
+function removeRecipe(id) {
+    const deletedRecipe = getRecipeById(id).then(item => item);
+    return db('recipes')
+        .where({ id })
+        .del()
+        .then(count => {
+            return deletedRecipe
+        });
+}
